@@ -1,0 +1,114 @@
+name: Tag Merged Build
+
+on:
+  pull_request:
+    types:
+      - closed
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  tag_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ---------------------------------------------------------
+      # Extract SHAs
+      # ---------------------------------------------------------
+      - name: Extract SHAs
+        id: sha
+        run: |
+          MERGE_SHA="${{ github.event.pull_request.merge_commit_sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+
+          echo "MERGE_SHA=$MERGE_SHA" >> $GITHUB_OUTPUT
+          echo "MERGE_SHORT=$(echo $MERGE_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+
+          echo "HEAD_SHA=$HEAD_SHA" >> $GITHUB_OUTPUT
+          echo "HEAD_SHORT=$(echo $HEAD_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      # ---------------------------------------------------------
+      # Login to GHCR
+      # ---------------------------------------------------------
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # ---------------------------------------------------------
+      # Retag PR image → sha-MERGESHORT
+      # ---------------------------------------------------------
+      - name: Retag and push image
+        run: |
+          SRC_TAG="sha-${{ steps.sha.outputs.HEAD_SHORT }}"
+          NEW_TAG="sha-${{ steps.sha.outputs.MERGE_SHORT }}"
+          PR_TAG="pr-${{ steps.sha.outputs.MERGE_SHORT }}"
+
+          echo "Pulling image: ghcr.io/${{ github.repository }}:$SRC_TAG"
+          docker pull ghcr.io/${{ github.repository }}:$SRC_TAG
+
+          echo "Tagging as: $NEW_TAG"
+          docker tag ghcr.io/${{ github.repository }}:$SRC_TAG ghcr.io/${{ github.repository }}:$NEW_TAG
+
+          echo "Tagging as: $PR_TAG"
+          docker tag ghcr.io/${{ github.repository }}:$SRC_TAG ghcr.io/${{ github.repository }}:$PR_TAG
+
+          echo "Pushing new tags"
+          docker push ghcr.io/${{ github.repository }}:$NEW_TAG
+          docker push ghcr.io/${{ github.repository }}:$PR_TAG
+
+      # ---------------------------------------------------------
+      # Create Git tags
+      # ---------------------------------------------------------
+      - name: Create Git tags
+        run: |
+          MERGE_SHA="${{ steps.sha.outputs.MERGE_SHA }}"
+          MERGE_SHORT="${{ steps.sha.outputs.MERGE_SHORT }}"
+
+          TAG1="sha-$MERGE_SHORT"
+          TAG2="pr-$MERGE_SHORT"
+
+          echo "Creating Git tag: $TAG1"
+          git tag $TAG1 $MERGE_SHA
+          git push origin $TAG1
+
+          echo "Creating Git tag: $TAG2"
+          git tag $TAG2 $MERGE_SHA
+          git push origin $TAG2
+
+      # ---------------------------------------------------------
+      # Deploy to production server
+      # ---------------------------------------------------------
+      - uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ vars.SSH_HOST_PRODUCTION }}
+          username: ${{ vars.SSH_USER_PRODUCTION }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_PRODUCTION }}
+          script: |
+            set -ex
+
+            IMAGE_TAG="sha-${{ steps.sha.outputs.MERGE_SHORT }}"
+            echo "Deploying $IMAGE_TAG to production..."
+
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+
+            docker pull ghcr.io/${{ github.repository }}:$IMAGE_TAG
+
+            cd ${{ vars.DEPLOY_PATH_PRODUCTION }}
+
+            IMAGE_TAG=$IMAGE_TAG docker compose -f production.compose.yaml up -d --force-recreate
+
+            docker system prune -f
