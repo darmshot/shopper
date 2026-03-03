@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+    cli:
+        build:
+            context: 'docker/php84'
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP:-1000}'
+                WWWUSER: '${WWWUSER:-1000}'
+        image: 'shopper/php84'
+        volumes:
+            - '.:/var/www/html'
+        profiles:
+            - cli
