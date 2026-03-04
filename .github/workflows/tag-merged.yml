@@ -92,23 +92,11 @@ jobs:
       # ---------------------------------------------------------
       # Deploy to production server
       # ---------------------------------------------------------
-      - uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ vars.SSH_HOST_PRODUCTION }}
-          username: ${{ vars.SSH_USER_PRODUCTION }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_PRODUCTION }}
-          script: |
-            set -ex
+      - name: Trigger Deploy to Production workflow
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy-production.yml/dispatches \
+            -d '{"ref":"master"}'
 
-            IMAGE_TAG="sha-${{ steps.sha.outputs.MERGE_SHORT }}"
-            echo "Deploying $IMAGE_TAG to production..."
-
-            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
-
-            docker pull ghcr.io/${{ github.repository }}:$IMAGE_TAG
-
-            cd ${{ vars.DEPLOY_PATH_PRODUCTION }}
-
-            IMAGE_TAG=$IMAGE_TAG docker compose -f production.compose.yaml up -d --force-recreate
-
-            docker system prune -f

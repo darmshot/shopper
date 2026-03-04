@@ -20,6 +20,13 @@ jobs:
             set -ex
             docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
             docker pull ghcr.io/${{ github.repository }}:sha-${{ env.SHORT_SHA }}
+
             cd ${{ vars.DEPLOY_PATH_PRODUCTION }}
+
+            # Run migrations
+            IMAGE_TAG=sha-${{ env.SHORT_SHA }} docker compose -f production.compose.yaml run --rm cli php artisan migrate --force
+
+            # Deploy new image
             IMAGE_TAG=sha-${{ env.SHORT_SHA }} docker compose -f production.compose.yaml up -d --force-recreate
+
             docker system prune -f
