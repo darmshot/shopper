@@ -25,8 +25,3 @@ yarn-error.log
 # Project exclude paths
 /storage/app/
 /storage/framework/
-!/storage/app/public
-!/storage/framework
-!/storage/framework/cache
-!/storage/framework/sessions
-!/storage/framework/views
