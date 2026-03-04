@@ -7,7 +7,6 @@ services:
                 WWWGROUP: '${WWWGROUP:-1000}'
                 WWWUSER: '${WWWUSER:-1000}'
         image: 'shopper/php84'
-        restart: unless-stopped
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:

@@ -11,8 +11,21 @@ services:
         networks:
             - shopper
         depends_on:
-            - mysql
-            - redis
+            mysql:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+    cli:
+        image: ghcr.io/darmshot/shopper:${IMAGE_TAG:-latest}
+        env_file:
+            - .env
+        networks:
+            - shopper
+        depends_on:
+            mysql:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
     mysql:
         image: percona/percona-server:8.0
         restart: unless-stopped
