@@ -66,6 +66,12 @@ jobs:
 
             cd ${{ env.DEPLOY_PATH }}
 
+            # Run migrations
+            IMAGE_TAG=sha-${{ env.SHORT_SHA }} docker compose -f production.compose.yaml run --rm cli php artisan migrate --force
+
+            # Deploy new image
             IMAGE_TAG=sha-${{ env.SHORT_SHA }} docker compose -f production.compose.yaml up -d --force-recreate
 
             docker system prune -f
+
+
