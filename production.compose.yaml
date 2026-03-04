@@ -16,6 +16,8 @@ services:
     mysql:
         image: percona/percona-server:8.0
         restart: unless-stopped
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
         environment:
             MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
             MYSQL_ROOT_HOST: "%"
@@ -26,7 +28,6 @@ services:
             MYSQL_EXTRA_OPTIONS: "${MYSQL_EXTRA_OPTIONS:-}"
         volumes:
             - shopper-mysql:/var/lib/mysql
-            - './docker/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
         networks:
             - shopper
         healthcheck:
