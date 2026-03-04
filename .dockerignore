@@ -1,0 +1,26 @@
+# Ignore everything by default
+**
+
+# Allow core Laravel application
+!app/
+!bootstrap/
+!bootstrap/cache/.gitignore
+!config/
+!database/
+!public/
+!public/index.php
+!resources/
+!routes/
+!artisan
+!composer.json
+!composer.lock
+!package.json
+!package-lock.json
+!vite.config.js
+!storage/logs/.gitignore
+!storage/framework/cache/.gitignore
+!storage/framework/sessions/.gitignore
+!storage/framework/views/.gitignore
+
+# Allow entrypoint script
+!docker/app/entrypoint.sh
