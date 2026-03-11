@@ -26,6 +26,8 @@ services:
                 condition: service_healthy
             redis:
                 condition: service_healthy
+        profiles:
+            - cli
     mysql:
         image: percona/percona-server:8.0
         restart: unless-stopped

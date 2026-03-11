@@ -12,10 +12,10 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts  \
 
 COPY --chown=www:www . .
 
-RUN composer install --no-dev --optimize-autoloader  \
-    && npm run build
-
-RUN php artisan view:cache  \
+RUN chmod +x docker/app/entrypoint.sh \
+    && composer install --no-dev --optimize-autoloader  \
+    && npm run build \
+    && php artisan view:cache  \
     && php artisan route:cache  \
     && php artisan event:cache
 
