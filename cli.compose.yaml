@@ -3,12 +3,12 @@ version: "3.9"
 services:
     cli:
         build:
-            context: 'docker/php84'
+            context: 'docker/php85'
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP:-1000}'
                 WWWUSER: '${WWWUSER:-1000}'
-        image: 'shopper/php84'
+        image: 'shopper/php85'
         volumes:
             - '.:/var/www/html'
         profiles:

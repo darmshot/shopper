@@ -1,39 +1,38 @@
 services:
     app:
         build:
-            context: 'docker/php84-debug'
+            context: 'docker/php85debug'
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: 'shopper/php84-debug'
+        image: 'shopper/php85debug'
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
             - '${APP_PORT:-80}:8000'
             - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         environment:
-            SUPERVISOR_PHP_COMMAND: '${SUPERVISOR_PHP_COMMAND}'
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
-            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+            XDEBUG_MODE: '${XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
             - '.:/var/www/html'
         networks:
             - shopper
+        command: sh -c "${RUN_APP_COMMAND}"
         depends_on:
             - mysql
             - redis
     cli:
         build:
-            context: 'docker/php84-debug'
+            context: 'docker/php85debug'
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: 'shopper/php84-debug'
+        image: 'shopper/php85debug'
         environment:
-            SUPERVISOR_PHP_COMMAND: '${SUPERVISOR_PHP_COMMAND}'
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'

@@ -30,10 +30,10 @@ jobs:
             ${{ runner.os }}-buildx-
       - uses: docker/build-push-action@v5
         with:
-          context: ./docker/php84
-          file: ./docker/php84/Dockerfile
+          context: ./docker/php85
+          file: ./docker/php85/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/shopper-php84-base:latest
+          tags: ghcr.io/${{ github.repository_owner }}/shopper-php85-base:latest
           build-args: |
             WWWUSER=1000
             WWWGROUP=1000

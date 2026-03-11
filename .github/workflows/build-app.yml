@@ -35,7 +35,7 @@ jobs:
       # ---------------------------------------------------------
       - name: Pull PHP base image
         run: |
-          docker pull ghcr.io/${{ github.repository_owner }}/shopper-php84-base:latest
+          docker pull ghcr.io/${{ github.repository_owner }}/shopper-php85-base:latest
 
       # ---------------------------------------------------------
       # Run PHPUnit & Pint tests inside the container
@@ -48,7 +48,7 @@ jobs:
           -v ${{ github.workspace }}:/var/www/html \
           -e APP_KEY=base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= \
           -w /var/www/html \
-          ghcr.io/${{ github.repository_owner }}/shopper-php84-base:latest \
+          ghcr.io/${{ github.repository_owner }}/shopper-php85-base:latest \
           sh -c "
           composer install --no-interaction --prefer-dist &&
 
