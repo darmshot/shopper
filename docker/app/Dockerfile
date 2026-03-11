@@ -1,28 +1,31 @@
-FROM ghcr.io/darmshot/shopper-php84-base:latest
+FROM ghcr.io/darmshot/shopper-php85-base:latest AS base
+
+FROM base AS build
 
 WORKDIR /var/www/html
 
-# Copy dependences files first for caching
 COPY composer.json composer.lock ./
 COPY package.json package-lock.json ./
 
-# Install dependencies (cached unless composer files change)
-RUN composer install --no-dev --optimize-autoloader --no-scripts
-RUN npm ci
+RUN composer install --no-dev --optimize-autoloader --no-scripts  \
+    && npm ci
 
-# Now copy the rest of the application
 COPY --chown=www:www . .
 
-RUN npm run build
+RUN composer install --no-dev --optimize-autoloader  \
+    && npm run build
 
-# Run post-copy optimizations
-RUN composer install --no-dev --optimize-autoloader
-RUN php artisan view:cache
-RUN php artisan route:cache
-RUN php artisan event:cache
+RUN php artisan view:cache  \
+    && php artisan route:cache  \
+    && php artisan event:cache
 
-# Switch to non-root user
+
+FROM base AS runtime
+
+WORKDIR /var/www/html
+
+COPY --from=build /var/www/html /var/www/html
+
 USER www
 
-# Start Application
 CMD ["./docker/app/entrypoint.sh"]

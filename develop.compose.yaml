@@ -1,12 +1,12 @@
 services:
     app:
         build:
-            context: 'docker/php84'
+            context: 'docker/php85'
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP:-1000}'
                 WWWUSER: '${WWWUSER:-1000}'
-        image: 'shopper/php84'
+        image: 'shopper/php85'
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -15,7 +15,7 @@ services:
             - '.:/var/www/html'
         networks:
             - shopper
-        command: sh -c "${DEVELOP_PHP_COMMAND}"
+        command: sh -c "${RUN_APP_COMMAND}"
         depends_on:
             mysql:
                 condition: service_healthy
@@ -23,12 +23,12 @@ services:
                 condition: service_healthy
     cli:
         build:
-            context: 'docker/php84'
+            context: 'docker/php85'
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP:-1000}'
                 WWWUSER: '${WWWUSER:-1000}'
-        image: 'shopper/php84'
+        image: 'shopper/php85'
         networks:
             - shopper
         volumes:
