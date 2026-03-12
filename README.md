@@ -1,6 +1,6 @@
 # Shopper
 
-A modern, open-source e-commerce platform built with Laravel.
+MVC open-source e-commerce platform built with Laravel.
 
 ## Getting Started
 

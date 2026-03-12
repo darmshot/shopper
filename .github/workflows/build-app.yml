@@ -141,8 +141,7 @@ jobs:
             -e QUEUE_CONNECTION=sync \
             -e DB_CONNECTION=sqlite \
             -e DB_DATABASE=:memory: \
-            ghcr.io/${{ github.repository }}:$TAG \
-            php artisan octane:start --server=swoole --workers=1 --task-workers=1 --max-requests=1 --host=0.0.0.0
+            ghcr.io/${{ github.repository }}:$TAG
 
           sleep 5
 
