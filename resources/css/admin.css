@@ -1,0 +1,23 @@
+[x-cloak] { display: none !important; }
+
+
+/* Slide from right + fade */
+.toast-enter-start {
+    opacity: 0;
+    transform: translateX(1rem);
+}
+
+.toast-enter-end {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast-leave-start {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast-leave-end {
+    opacity: 0;
+    transform: translateX(1rem);
+}

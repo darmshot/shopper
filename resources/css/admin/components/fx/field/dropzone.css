@@ -1,0 +1,99 @@
+.ui-field-dropzone {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+
+    border: 2px dashed var(--tblr-border-color);
+    border-radius: 6px;
+    padding: 1rem;
+    background: var(--tblr-bg-surface);
+
+    /* Tile container — auto height */
+    .dz-preview {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Square image box */
+    .dz-image {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border: 1px solid var(--tblr-border-color);
+        border-radius: 3px;
+        overflow: hidden;
+        background: var(--tblr-bg-surface);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Image inside */
+    .dz-image img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+        position: static !important;
+        background: var(--tblr-body-bg);
+    }
+
+    /* Info under image */
+    .dz-details {
+        margin-top: 6px;
+        font-size: 12px;
+        color: var(--tblr-body-color);
+        line-height: 1.2;
+        text-align: left;
+        position: static !important;
+    }
+
+    /* Filename ellipsis */
+    .dz-filename span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        width: 100%;
+    }
+
+    /* Size */
+    .dz-size span {
+        color: var(--tblr-secondary-color);
+    }
+
+    /* Remove link under info */
+    .dz-remove {
+        margin-top: 4px;
+        font-size: 12px;
+        color: var(--tblr-primary);
+        position: static !important;
+    }
+
+    /* Hide default icons */
+    .dz-success-mark,
+    .dz-error-mark {
+        display: none !important;
+    }
+
+    /* Drop area at bottom */
+    .dz-message {
+        order: 999;
+        width: 100%;
+        text-align: center;
+        padding: 1rem 0;
+
+        grid-column: 1 / -1;
+        margin-top: 1rem;
+        color: var(--tblr-primary);
+    }
+
+    /* While dragging, keep the tile the same size */
+    .dz-preview.sortable-chosen {
+        opacity: 0.6;
+    }
+
+    /* Placeholder tile during drag */
+    .dz-preview.sortable-ghost {
+        opacity: 0.3;
+        border: 2px dashed var(--tblr-border-color);
+    }
+}

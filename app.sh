@@ -22,7 +22,7 @@ case "$1" in
         docker compose -p shopper-cli --file=cli.compose.yaml run --rm cli "$@"
         ;;
 
-    s)
+    setup)
         ./app.sh cli composer setup
         ;;
 
@@ -30,11 +30,27 @@ case "$1" in
         ./app.sh run php artisan migrate --force
         ;;
 
-    c)
+    cp)
         ./app.sh cli vendor/bin/pint --test
-        ./app.sh cli vendor/bin/phpstan analyse --no-progress
+        ;;
+
+    cr)
         ./app.sh cli vendor/bin/rector process --dry-run
-        ./app.sh cli vendor/bin/pest --testdox
+        ;;
+
+    cps)
+        ./app.sh cli vendor/bin/phpstan analyse --no-progress
+        ;;
+
+    ct)
+        ./app.sh cli vendor/bin/pest tests/Unit --testdox
+        ./app.sh run vendor/bin/pest tests/Feature --testdox
+        ;;
+    c)
+        ./app.sh cp
+        ./app.sh cr
+        ./app.sh cps
+        ./app.sh ct
         ;;
 
     mysqldump)
@@ -67,3 +83,6 @@ case "$1" in
         docker compose --file=$COMPOSE_FILE exec app php artisan "$@"
         ;;
 esac
+
+
+# todo implement: some command like - sail php -d xdebug.mode=off vendor/bin/rector process

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -83,6 +85,21 @@ return [
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Currency Configuration
+    |--------------------------------------------------------------------------
+    |
+    | The application currency determines the default currency that will be used
+    | by Laravel's currency methods. This option can be
+    | set to any currency for which you plan to have code strings.
+    |
+    */
+
+    'currency' => env('APP_CURRENCY', 'USD'),
+
+    'fallback_currency' => env('APP_FALLBACK_CURRENCY', 'USD'),
 
     /*
     |--------------------------------------------------------------------------

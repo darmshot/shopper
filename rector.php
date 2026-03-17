@@ -18,6 +18,12 @@ return static function (RectorConfig $config): void {
         LaravelSetList::LARAVEL_CODE_QUALITY,
     ]);
 
+    $config->skip([
+        Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector::class => [
+            __DIR__.'/app/Http/Controllers/*',
+        ],
+    ]);
+
     // Auto-import classes
     $config->importNames();
     $config->importShortClasses();
