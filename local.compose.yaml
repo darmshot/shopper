@@ -4,7 +4,8 @@ services:
             context: 'docker/php85debug'
             dockerfile: Dockerfile
             args:
-                WWWGROUP: '${WWWGROUP}'
+                WWWUSER: '${WWWUSER:-1000}'
+                WWWGROUP: '${WWWGROUP:-1000}'
         image: 'shopper/php85debug'
         extra_hosts:
             - 'host.docker.internal:host-gateway'
@@ -12,11 +13,10 @@ services:
             - '${APP_PORT:-80}:8000'
             - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         environment:
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
             XDEBUG_MODE: '${XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
+            IGNITION_EDITOR: 'phpstorm'
         volumes:
             - '.:/var/www/html'
         networks:
@@ -30,11 +30,10 @@ services:
             context: 'docker/php85debug'
             dockerfile: Dockerfile
             args:
-                WWWGROUP: '${WWWGROUP}'
+                WWWGROUP: '${WWWGROUP:-1000}'
+                WWWUSER: '${WWWUSER:-1000}'
         image: 'shopper/php85debug'
         environment:
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'

@@ -7,15 +7,27 @@ ARG WWWGROUP=1000
 
 RUN apk add --no-cache \
     shadow \
-    curl -fsSL https://alpine.nodesource.com/setup_24.x | sh \
-        && apk add --no-cache nodejs npm
+    freetype-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
+    zlib-dev \
+    icu-dev \
+    && curl -fsSL https://alpine.nodesource.com/setup_24.x | sh \
+    && apk add --no-cache nodejs npm
 
 RUN apk add --no-cache --virtual .build-deps \
         autoconf \
         build-base \
         linux-headers \
         git \
+    && docker-php-ext-configure gd \
+        --with-freetype \
+        --with-jpeg \
+        --with-webp \
+    && docker-php-ext-install gd \
     && docker-php-ext-install pcntl \
+    && docker-php-ext-install intl \
     && git clone https://github.com/xdebug/xdebug.git /tmp/xdebug \
     && cd /tmp/xdebug \
     && phpize \
@@ -35,5 +47,3 @@ RUN addgroup -g ${WWWGROUP} www \
     && chown -R www:www /var/www/html
 
 USER www
-
-EXPOSE 8000

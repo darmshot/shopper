@@ -14,6 +14,20 @@ env:
 jobs:
   tests:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
     permissions:
       contents: read
       packages: read
@@ -44,9 +58,16 @@ jobs:
       - name: Run unit & pint tests
         run: |
           docker run --rm \
+          --add-host=host.docker.internal:host-gateway \
           --user 1001:121 \
           -v ${{ github.workspace }}:/var/www/html \
           -e APP_KEY=base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= \
+          -e DB_CONNECTION=mysql \
+          -e DB_HOST=host.docker.internal \
+          -e DB_PORT=3306 \
+          -e DB_DATABASE=test_db \
+          -e DB_USERNAME=root \
+          -e DB_PASSWORD=root \
           -w /var/www/html \
           ghcr.io/${{ github.repository_owner }}/shopper-php85-base:latest \
           sh -c "
@@ -145,7 +166,7 @@ jobs:
 
           sleep 5
 
-          curl -f http://localhost:8000 || (docker logs octane_test && exit 1)
+          curl -f http://localhost:8000/up || (docker logs octane_test && exit 1)
 
           docker stop octane_test
 

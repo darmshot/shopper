@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+@source "../../**/*.blade.php";
+@source "../../**/*.js";
+@source "../../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@source "../../../storage/framework/views/*.php";
+
+
+
+@plugin "daisyui/theme" {
+    name: "light";
+    default: false;
+    prefersdark: false;
+    color-scheme: "light";
+    --color-base-100: oklch(98% 0 0);
+    --color-base-200: oklch(97% 0 0);
+    --color-base-300: oklch(92% 0 0);
+    --color-base-content: oklch(20% 0 0);
+    --color-primary: #FF0000;
+    --color-primary-content: #FFFFFF;
+    --color-secondary: #000000;
+    --color-secondary-content: oklch(100% 0 0);
+    --color-accent: #FF0000;
+    --color-accent-content: #FFFFFF;
+    --color-neutral: #EEEEEE;
+    --color-neutral-content: #000000;
+    --color-info: oklch(74% 0.16 232.661);
+    --color-info-content: oklch(29% 0.066 243.157);
+    --color-success: oklch(76% 0.177 163.223);
+    --color-success-content: oklch(26% 0.051 172.552);
+    --color-warning: oklch(82% 0.189 84.429);
+    --color-warning-content: oklch(27% 0.077 45.635);
+    --color-error: #FF0000;
+    --color-error-content: #fff;
+    --radius-selector: 0rem;
+    --radius-field: 0rem;
+    --radius-box: 0rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+}
+
+@plugin "daisyui" {
+    themes: ["light"];
+    include: 'card button join tabs badge dropdown menu checkbox breadcrumbs carousel modal alert drawer'
+}
+
+@layer components {
+    .input:focus,
+    .input:focus-visible {
+        @apply outline-none ring-0 shadow-none;
+    }
+
+    .navbar {
+        @apply bg-base-100 shadow-sm max-h-none flex;
+    }
+
+    .navbar-group {
+        @apply join;
+    }
+
+    .navbar-group-item {
+        @apply border-x min-h-[60px] flex items-center gap-3 join-item;
+    }
+
+
+    .btn-navbar-icon {
+        --size: 60px;
+        @apply btn btn-square btn-link btn-xl btn-secondary hover:text-primary;
+    }
+
+    .h1 {
+        @apply text-xl md:text-2xl lg:text-3xl font-bold;
+    }
+
+    .h2 {
+        @apply text-lg md:text-xl lg:text-2xl font-bold;
+    }
+
+    .card-body, .card-section {
+        @apply px-5 py-6;
+    }
+
+    .toolbar {
+        @apply join flex flex-wrap mb-10 bg-base-100;
+    }
+
+    .toolbar-section {
+        @apply border-x border-white join-item;
+    }
+
+    .breadcrumbs {
+        @apply text-sm text-white;
+    }
+
+    .responsive-grid-cols-6 {
+        @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5 mb-5;
+    }
+
+    .responsive-grid-cols-5 {
+        @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-5 mb-5;
+    }
+
+    .responsive-grid-cols-4 {
+        @apply grid grid-cols-2 xl:grid-cols-4 gap-5 mb-5;
+    }
+
+    .responsive-grid-cols-3 {
+        @apply grid grid-cols-2 xl:grid-cols-3 gap-5 mb-5;
+    }
+
+}
+
+@utility container {
+    @apply max-w-305 mx-auto px-5;
+}
+
+
+@utility tabs {
+ @apply join;
+}
+
+@utility tab {
+    @apply  btn btn-neutral font-bold join-item text-black checked:text-accent [--btn-border:#FFFFFF];
+}
+
+@utility tab-content {
+    @apply border-none -mt-px;
+}
+
+/*@utility btn-neutral {*/
+/*    */
+/*}*/
+@utility active {
+    @apply text-accent;
+}
+
+
+@utility btn {
+    @apply shadow-none ;
+}
+
+
+html {
+    scrollbar-gutter: stable;
+}

@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "strict": true,
+        "noImplicitThis": true,
+        "lib": ["DOM", "ESNext"],
+        "allowJs": false,
+        "isolatedModules": true,
+        "types": ["vite/client"],
+        "baseUrl": ".",
+        "paths": {
+            "design/*": ["resources/js/design/*"],
+            "admin/*": ["resources/js/design/*"],
+            "@/*": ["resources/js/*"]
+        }
+    },
+    "include": [
+        "resources/js/**/*.ts",
+        "resources/js/**/*.d.ts"
+    ]
+}
