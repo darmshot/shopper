@@ -22,8 +22,8 @@ readonly class FilterProduct extends EloquentQueryScope
     {
         $filters = $this->filters;
 
-        $query->when($filters['id'] ?? null, static function (Builder $query, mixed $value) {
-            $query->where('id', $value);
+        $query->when($filters['id'] ?? null, static function (Builder $query, $value) {
+            $query->whereIn('id', (array) $value);
         });
 
         $query->when(isset($filters['active']), static function (Builder $query) use ($filters) {

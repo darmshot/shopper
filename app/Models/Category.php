@@ -109,27 +109,6 @@ class Category extends Model implements Nodeable
     */
 
     /**
-     * @param  array<int,string>  $categories
-     */
-    public static function syncProductWithCategories(string $productId, array $categories): void
-    {
-        self::query()
-            ->whereHas('products', static fn ($query) => $query->where('id', $productId))
-            ->get()
-            ->each(static function (Category $category) use ($productId) {
-                $category->detachProduct($productId);
-            });
-
-        foreach ($categories as $index => $categoryId) {
-            $category = self::find($categoryId);
-
-            if ($category) {
-                $category->attachProduct($productId, ['sort' => $index]);
-            }
-        }
-    }
-
-    /**
      * @param  array<string,mixed>  $attributes
      */
     public function attachProduct(string $productId, array $attributes = []): void

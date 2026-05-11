@@ -47,7 +47,7 @@
                     <label class="form-label required">Category</label>
 
                     @foreach($categories as $categoryId)
-                        <div class="row mb-2">
+                        <div class="row">
                             <div class="col-md-8">
                                 <x-admin::fx.field.select
                                     name="categories[]"

@@ -301,7 +301,6 @@ class Product extends Model
     {
         $skus = array_column($variants, 'sku');
 
-        // Delete removed variants (fires events)
         $this
             ->variants()
             ->whereNotIn('sku', $skus)
@@ -316,13 +315,11 @@ class Product extends Model
                 ->first();
 
             if (! $model) {
-                // Create new variant (fires creating/created)
                 $model = $this->variants()->make([
                     'sku' => $variant['sku'],
                 ]);
             }
 
-            // Update fields (fires saving/updating/updated)
             $model->fill([
                 'name' => $variant['name'] ?? null,
                 'price' => $variant['price'],
@@ -331,7 +328,7 @@ class Product extends Model
                 'sort' => $variant['sort'] ?? 0,
             ]);
 
-            $model->save(); // ← events fire here
+            $model->save();
         }
 
         $this->touch();
