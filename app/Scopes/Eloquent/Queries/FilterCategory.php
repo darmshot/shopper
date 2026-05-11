@@ -22,5 +22,22 @@ readonly class FilterCategory extends EloquentQueryScope
         $query->when($filters['id'] ?? null, function (Builder $query, $value) {
             $query->whereIn('id', (array) $value);
         });
+
+        $query->when($filters['products'] ?? null, function (Builder $query, $value) {
+            $query->whereHas('products', fn (Builder $query) => $value ? $query->tap(new FilterProduct((array) $value)) : $query);
+        });
+    }
+
+    public static function byProduct(?string $value): self
+    {
+        if (empty($value)) {
+            return new self([]);
+        }
+
+        return new self([
+            'products' => [
+                'id' => $value,
+            ],
+        ]);
     }
 }

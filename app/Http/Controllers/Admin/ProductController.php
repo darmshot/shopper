@@ -7,13 +7,14 @@ namespace App\Http\Controllers\Admin;
 use App\Exceptions\MediaStorageException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductRequest;
-use App\Models\Category;
-use App\Models\Feature;
 use App\Models\Product;
-use App\Services\Media\ProductStorage;
+use App\Operations\Cases\Product\CreateProduct;
+use App\Operations\Cases\Product\CreateProductHandler;
+use App\Operations\Cases\Product\UpdateProduct;
+use App\Operations\Cases\Product\UpdateProductHandler;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Throwable;
 
 class ProductController extends Controller
@@ -37,46 +38,29 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
+     * @throws MediaStorageException
      * @throws Throwable
      */
-    public function store(ProductRequest $request, ProductStorage $storage): RedirectResponse
+    public function store(ProductRequest $request, CreateProductHandler $handler): RedirectResponse
     {
-        $product = new Product($request->validated());
-        DB::transaction(static function () use ($request, &$product) {
-            $product->save();
+        $newId = Str::uuid7()->toString();
 
-            $product->assignBrand($request->brandId());
-
-            $product->syncRelated($request->related());
-
-            $product->saveVariants($request->variants());
-
-            Category::syncProductWithCategories($product->id, $request->categories());
-
-            $newOptions = [];
-            foreach ($request->newFeatures() as $newFeature) {
-                $feature = Feature::firstOrCreate([
-                    'name' => $newFeature['name'],
-                ]);
-
-                $feature->attachCategory($request->firstCategoryId());
-
-                $newOptions[] = ['feature_id' => $feature->id, 'value' => $newFeature['value']];
-            }
-
-            $product->syncOptions([
-                ...$request->options(),
-                ...$newOptions,
-            ]);
-        });
-
-        $storage->putImages($product->id, $request->droppedImages(), static function (array $paths) use ($product) {
-            $product->putImages($paths);
-        });
+        $handler(new CreateProduct(
+            newId: $newId,
+            attributes: $request->validated(),
+            related: $request->related(),
+            brandId: $request->brandId(),
+            variants: $request->variants(),
+            categories: $request->categories(),
+            newFeatures: $request->newFeatures(),
+            firstCategoryId: $request->firstCategoryId(),
+            options: $request->options(),
+            droppedImages: $request->droppedImages(),
+        ));
 
         session()->flash('success', __('status.success_created', ['entity' => __('product.entity_name_singular')]));
 
-        return redirect()->action([self::class, 'edit'], $product);
+        return redirect()->action([self::class, 'edit'], $newId);
     }
 
     /**
@@ -90,46 +74,24 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @throws MediaStorageException
      * @throws Throwable
+     * @throws MediaStorageException
      */
-    public function update(ProductRequest $request, Product $product, ProductStorage $storage): RedirectResponse
+    public function update(ProductRequest $request, Product $product, UpdateProductHandler $handler): RedirectResponse
     {
-        DB::transaction(static function () use ($request, $product) {
-            $product->update($request->validated());
-
-            $product->assignBrand($request->brandId());
-
-            $product->syncRelated($request->related());
-
-            $product->syncVariants($request->variants());
-
-            Category::syncProductWithCategories($product->id, $request->categories());
-
-            $newOptions = [];
-            foreach ($request->newFeatures() as $newFeature) {
-                $feature = Feature::firstOrCreate([
-                    'name' => $newFeature['name'],
-                ]);
-
-                $feature->attachCategory($request->firstCategoryId());
-
-                $newOptions[] = ['feature_id' => $feature->id, 'value' => $newFeature['value']];
-            }
-
-            $product->syncOptions([
-                ...$request->options(),
-                ...$newOptions,
-            ]);
-
-            $product->deleteImages($request->deletedImages());
-        });
-
-        $storage->deleteImages($request->deletedImages());
-
-        $storage->putImages($product->id, $request->droppedImages(), static function (array $paths) use ($product) {
-            $product->putImages($paths);
-        });
+        $handler(new UpdateProduct(
+            id: $product->id,
+            attributes: $request->validated(),
+            related: $request->related(),
+            brandId: $request->brandId(),
+            variants: $request->variants(),
+            categories: $request->categories(),
+            newFeatures: $request->newFeatures(),
+            firstCategoryId: $request->firstCategoryId(),
+            options: $request->options(),
+            droppedImages: $request->droppedImages(),
+            deletedImages: $request->deletedImages(),
+        ));
 
         session()->flash('success', __('status.success_updated', ['entity' => __('product.entity_name_singular')]));
 

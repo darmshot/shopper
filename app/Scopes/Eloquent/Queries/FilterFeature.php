@@ -31,12 +31,30 @@ readonly class FilterFeature extends EloquentQueryScope
             $query->whereHas('categories',
                 fn (Builder $query) => $value ? $query->tap(new FilterCategory((array) $value)) : $query);
         });
+
+        $query->when($filters['name'] ?? null, static function (Builder $query, $value) {
+            $query->whereIn('name', (array) $value);
+        });
     }
 
     public static function inFilter(): self
     {
         return new self([
             'in_filter' => true,
+        ]);
+    }
+
+    /**
+     * @param  array<int, string>|null  $values
+     */
+    public static function byNames(?array $values): self
+    {
+        if (empty($values)) {
+            return new self([]);
+        }
+
+        return new self([
+            'name' => $values,
         ]);
     }
 

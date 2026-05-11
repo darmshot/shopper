@@ -2,7 +2,7 @@
     <div class="card-header">Product Properties</div>
     <div class="card-body">
         @foreach($this->features as $feature)
-            <div wire:key="{{ $feature->id }}" class="row mb-3">
+            <div wire:key="{{ $feature->id }}" class="row">
                 <label class="col-sm-4 col-form-label">
                     {{ $feature->name }}
                     <x-admin::fx.field.hidden

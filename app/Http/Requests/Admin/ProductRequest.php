@@ -56,18 +56,11 @@ class ProductRequest extends FormRequest
             'related' => ['array'],
             'related.*' => ['required', 'uuid:7', 'exists:products,id'],
             'variants' => ['array', 'min:1'],
-            //                                    'variants.*.sku' => 'required|string|unique:variants,sku|min:3|max:255',
             'variants.*.sku' => ['required', 'string', 'min:3', 'max:255'],
-            //            'variants.*.sku' => [
-            //                Rule::unique('variants', 'sku')
-            //                    ->when($this->route()->hasParameter('product'),
-            //                        fn ($rule) => $rule->ignore(Variant::where())),
-            //            ],
             'variants.*.name' => ['nullable', 'string', 'min:3', 'max:255'],
             ...$this->priceRules('variants.*.price'),
             'variants.*.old_price' => ['nullable', 'decimal:0,2', 'decimal:0,2', 'min:1', 'max:900000000'],
             ...$this->stockRules('variants.*.stock'),
-            //            'variants.*.sort' => ['nullable', 'integer', 'min:0', 'max:4000000'],
             'sort_variants' => ['array'],
             'sort_variants.*' => ['integer', 'min:0', 'max:4000000'],
             'options' => ['array'],
