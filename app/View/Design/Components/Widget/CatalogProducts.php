@@ -39,6 +39,7 @@ class CatalogProducts extends Component
 
         $this->products = Product::query()
             ->with(['variant'])
+            ->tap(FilterProduct::activeOnly()->asTap())
             ->tap(FilterProduct::byCategory($categoryId)->asTap())
             ->tap(FilterProduct::byVariant($variant)->asTap())
             ->tap(FilterProduct::byFeatures($features)->asTap())
