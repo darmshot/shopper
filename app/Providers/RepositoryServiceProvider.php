@@ -21,7 +21,7 @@ class RepositoryServiceProvider extends ServiceProvider
      * @var array<class-string,class-string>
      */
     private array $objectRepositories = [
-        //        \App\Contracts\Repositories\CategoryRepository::class => \App\Repositories\Object\CategoryRepository::class,
+        CategoryRepository::class => \App\Repositories\ObjectCache\CategoryRepository::class,
     ];
 
     /**

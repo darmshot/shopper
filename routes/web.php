@@ -17,7 +17,6 @@ Route::group([
 
 Route::group([
     'middleware' => [
-        \App\Http\Middleware\ScopeActiveEntities::class,
         \App\Http\Middleware\ContentSecurityPolicyLevelTwo::class,
     ],
 ], function () {

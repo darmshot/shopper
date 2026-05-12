@@ -165,4 +165,12 @@ readonly class FilterProduct extends EloquentQueryScope
             'related' => ['id' => $productId],
         ]);
     }
+
+    public static function activeOnly(): self
+    {
+        return new self([
+            'active' => true,
+            'variants' => [],
+        ]);
+    }
 }

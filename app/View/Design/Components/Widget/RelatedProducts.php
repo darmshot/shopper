@@ -26,6 +26,7 @@ class RelatedProducts extends Component
     {
         $this->products = Product::query()
             ->with(['variant'])
+            ->tap(FilterProduct::activeOnly()->asTap())
             ->tap(FilterProduct::byRelated($productId)->asTap())
             ->limit(10)
             ->get();
